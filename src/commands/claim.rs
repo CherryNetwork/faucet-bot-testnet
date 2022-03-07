@@ -34,11 +34,9 @@ async fn claim(ctx: &Context, msg: &Message, args: Args) -> CommandResult {
         .await
         .unwrap();
 
-
     println!("Balance transfer extrinscic submitted: {}", hash);
 
     // TODO: Update the database - @charmitro
-
 
     Ok(())
 }
