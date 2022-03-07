@@ -9,9 +9,9 @@
 //! features = ["framework", "standard_framework"]
 //! ```
 mod commands;
+mod db;
+mod metadata;
 
-use std::{collections::HashSet, env, sync::Arc};
-pub mod metadata;
 use commands::{claim::*, math::*, meta::*, owner::*};
 use metadata::api::RuntimeApi;
 use serenity::{
@@ -22,19 +22,24 @@ use serenity::{
     model::{event::ResumedEvent, gateway::Ready},
     prelude::*,
 };
+use sqlx::{sqlite::SqlitePool, Pool, Sqlite};
+use std::{collections::HashSet, env, sync::Arc};
 use subxt::{ClientBuilder as SubstrateClientBuilder, DefaultConfig, DefaultExtra};
 use tracing::{error, info};
 
 pub struct ShardManagerContainer;
-
 impl TypeMapKey for ShardManagerContainer {
     type Value = Arc<Mutex<ShardManager>>;
 }
 
 pub struct SubstrateAPIContainer;
-
 impl TypeMapKey for SubstrateAPIContainer {
     type Value = Arc<RuntimeApi<DefaultConfig, DefaultExtra<DefaultConfig>>>;
+}
+
+pub struct SqliteLitePoolContaintainer;
+impl TypeMapKey for SqliteLitePoolContaintainer {
+    type Value = Arc<Pool<Sqlite>>;
 }
 
 struct Handler;
@@ -98,11 +103,14 @@ async fn main() {
         .unwrap()
         .to_runtime_api::<metadata::api::RuntimeApi<DefaultConfig, DefaultExtra<DefaultConfig>>>();
 
+    let pool = SqlitePool::connect("sqlite:faucet.db").await.unwrap();
+
     {
         let mut data = client.data.write().await;
         data.insert::<ShardManagerContainer>(client.shard_manager.clone());
-        data.insert::<SubstrateAPIContainer>(Arc::new(api).clone());
-}
+        data.insert::<SubstrateAPIContainer>(Arc::new(api));
+        data.insert::<SqliteLitePoolContaintainer>(Arc::new(pool).clone())
+    }
 
     let shard_manager = client.shard_manager.clone();
 
