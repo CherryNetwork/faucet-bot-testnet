@@ -1,7 +1,7 @@
 [package]
-name = "e06_sample_bot_structure"
+name = "faucuet-bot-testnet"
 version = "0.1.0"
-authors = ["my name <my@email.address>"]
+authors = ["Charalampos Mitrodimas <liompis@cherrylabs.org>"]
 edition = "2018"
 
 [dependencies]
