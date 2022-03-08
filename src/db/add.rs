@@ -1,5 +1,5 @@
 use chrono::Utc;
-use sqlx::{SqlitePool};
+use sqlx::SqlitePool;
 
 pub async fn add_user(
     pool: &SqlitePool,
