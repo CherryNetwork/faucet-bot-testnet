@@ -12,6 +12,7 @@ subxt = { git = "https://github.com/paritytech/subxt.git" }
 codec = { package = "parity-scale-codec", version = "3.0.0", default-features = false, features = ["derive", "full", "bit-vec"] }
 hex = "0.4.3"
 sp-keyring = "6.0.0"
+sp-core = "6.0.0"
 sqlx = { version = "0.5", features = [ "runtime-tokio-rustls", "sqlite" ] }
 chrono = "0.4.19"
 
