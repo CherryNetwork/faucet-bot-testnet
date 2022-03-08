@@ -13,3 +13,4 @@ Populate `.env` file with the following:
 1. `cargo install sqlx-cli`
 2. `sqlx db create`
 3. `sqlx migrate run`
+4. `cargo run`
