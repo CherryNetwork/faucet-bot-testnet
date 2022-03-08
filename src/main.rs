@@ -103,7 +103,9 @@ async fn main() {
         .unwrap()
         .to_runtime_api::<metadata::api::RuntimeApi<DefaultConfig, DefaultExtra<DefaultConfig>>>();
 
-    let pool = SqlitePool::connect("sqlite:faucet.db").await.unwrap();
+    let pool = SqlitePool::connect(env::var("DATABASE_URL").expect("").as_str())
+        .await
+        .unwrap();
 
     {
         let mut data = client.data.write().await;
