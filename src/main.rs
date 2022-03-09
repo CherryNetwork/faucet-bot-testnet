@@ -98,6 +98,7 @@ async fn main() {
         .expect("Err creating client");
 
     let api = SubstrateClientBuilder::new()
+    	.set_url("wss://testnet-seeder.cherry.place:443")
         .build()
         .await
         .unwrap()
