@@ -30,7 +30,7 @@ impl TypeMapKey for ShardManagerContainer {
 
 pub struct UsersClaimedContainer;
 impl TypeMapKey for UsersClaimedContainer {
-    type Value = Vec<String>;
+    type Value = Arc<RwLock<Vec<String>>>;
 }
 
 struct Handler;
@@ -84,6 +84,9 @@ async fn main() {
     {
         let mut data = client.data.write().await;
         data.insert::<ShardManagerContainer>(client.shard_manager.clone());
+        data.insert::<UsersClaimedContainer>(Arc::new(RwLock::new(
+			Vec::<String>::new(),
+		)));
     }
 
     let shard_manager = client.shard_manager.clone();

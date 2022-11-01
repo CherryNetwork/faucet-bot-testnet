@@ -21,7 +21,7 @@ pub mod cherry {}
 async fn claim(ctx: &Context, msg: &Message, args: Args) -> CommandResult {
     let account_id = args.parse::<String>().unwrap();
 
-    let mut users_claimed = {
+    let users_claimed = {
         let data_read = ctx.data.read().await;
 
         data_read
@@ -40,8 +40,8 @@ async fn claim(ctx: &Context, msg: &Message, args: Args) -> CommandResult {
     let signer = PairSigner::<_, _>::new(pair);
     let dest = MultiAddress::from(AccountId32::from_string(&account_id).unwrap());
 
-    if !users_claimed.contains(&account_id) {
-        users_claimed.push(account_id);
+    if !users_claimed.read().await.contains(&account_id) {
+        users_claimed.write().await.push(account_id);
 
         let tx = cherry::tx()
             .balances()
