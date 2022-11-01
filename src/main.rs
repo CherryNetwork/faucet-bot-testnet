@@ -28,6 +28,11 @@ impl TypeMapKey for ShardManagerContainer {
     type Value = Arc<Mutex<ShardManager>>;
 }
 
+pub struct UsersClaimedContainer;
+impl TypeMapKey for UsersClaimedContainer {
+    type Value = Vec<String>;
+}
+
 struct Handler;
 
 #[async_trait]
