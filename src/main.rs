@@ -11,6 +11,7 @@
 mod commands;
 
 use commands::claim::*;
+use dotenv::dotenv;
 use serenity::{
     async_trait,
     client::bridge::gateway::ShardManager,
@@ -48,6 +49,7 @@ struct General;
 async fn main() {
     tracing_subscriber::fmt::init();
 
+    dotenv().ok();
     let token = env::var("DISCORD_TOKEN").expect("Expected a token in the environment");
 
     let http = Http::new_with_token(&token);
