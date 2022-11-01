@@ -1,3 +1,4 @@
+use crate::UsersClaimedContainer;
 use serenity::framework::standard::Args;
 use serenity::framework::standard::{macros::command, CommandResult};
 use serenity::model::prelude::*;
@@ -20,27 +21,48 @@ pub mod cherry {}
 async fn claim(ctx: &Context, msg: &Message, args: Args) -> CommandResult {
     let account_id = args.parse::<String>().unwrap();
 
-    let api = OnlineClient::<PolkadotConfig>::from_url("wss://testnet-seeder.cherrynetwork.dev:443").await.unwrap();
+    let users_claimed = {
+        let data_read = ctx.data.read().await;
+
+        data_read
+            .get::<UsersClaimedContainer>()
+            .expect("Cannot get UsersClaimedContainer")
+            .clone()
+    };
+
+    let api =
+        OnlineClient::<PolkadotConfig>::from_url("wss://testnet-seeder.cherrynetwork.dev:443")
+            .await
+            .unwrap();
 
     let phrase = env::var("PHRASE")?;
     let pair = Pair::from_string(&phrase.to_string(), None).unwrap();
     let signer = PairSigner::<_, _>::new(pair);
     let dest = MultiAddress::from(AccountId32::from_string(&account_id).unwrap());
 
-    let tx = cherry::tx()
-        .balances()
-        .transfer_keep_alive(dest, 5000000000000000000); // existential deposit - @charmitro
+    if !users_claimed.read().await.contains(&account_id) {
+        users_claimed.write().await.push(account_id);
 
-    let hash = api
-        .tx()
-        .sign_and_submit_default(&tx, &signer)
-        .await
-        .unwrap();
+        let tx = cherry::tx()
+            .balances()
+            .transfer_keep_alive(dest, 5000000000000000000); // existential deposit - @charmitro
 
-    msg.react(&ctx.http, ReactionType::Unicode("🚀".to_string()))
-        .await?;
+        let hash = api
+            .tx()
+            .sign_and_submit_default(&tx, &signer)
+            .await
+            .unwrap();
 
-    println!("Balance transfer extrinscic submitted: {}", hash);
+        msg.react(&ctx.http, ReactionType::Unicode("🚀".to_string()))
+            .await?;
+
+        println!("Balance transfer extrinscic submitted: {}", hash);
+    } else {
+        msg.channel_id
+            .say(&ctx.http, "You have already claimed CHER on this accountId")
+            .await
+            .unwrap();
+    }
 
     Ok(())
 }
