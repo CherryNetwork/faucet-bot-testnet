@@ -45,7 +45,7 @@ async fn claim(ctx: &Context, msg: &Message, args: Args) -> CommandResult {
 
         let tx = cherry::tx()
             .balances()
-            .transfer_keep_alive(dest, 5000000000000000000); // existential deposit - @charmitro
+            .transfer_keep_alive(dest, 20000000000000000000); // existential deposit - @charmitro
 
         let hash = api
             .tx()
