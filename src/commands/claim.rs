@@ -31,7 +31,7 @@ async fn claim(ctx: &Context, msg: &Message, args: Args) -> CommandResult {
     };
 
     let api =
-        OnlineClient::<PolkadotConfig>::from_url("wss://testnet-seeder.cherrynetwork.dev")
+        OnlineClient::<PolkadotConfig>::from_url("wss://testnet-seeder.cherrynetwork.dev:443")
             .await
             .unwrap();
 

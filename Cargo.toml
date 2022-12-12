@@ -1,5 +1,5 @@
 [package]
-name = "faucuet-bot-testnet"
+name = "faucet-bot-testnet"
 version = "0.1.0"
 authors = ["Charalampos Mitrodimas <liompis@cherrylabs.org>"]
 edition = "2018"
