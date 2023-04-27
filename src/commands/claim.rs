@@ -31,7 +31,7 @@ async fn claim(ctx: &Context, msg: &Message, args: Args) -> CommandResult {
     };
 
     let api =
-        OnlineClient::<PolkadotConfig>::from_url("wss://testnet-seeder.cherrynetwork.dev:443")
+        OnlineClient::<PolkadotConfig>::from_url("wss://testnet.seed.cherrylabs.org:443")
             .await
             .unwrap();
 
@@ -45,7 +45,7 @@ async fn claim(ctx: &Context, msg: &Message, args: Args) -> CommandResult {
 
         let tx = cherry::tx()
             .balances()
-            .transfer_keep_alive(dest, 20000000000000000000); // existential deposit - @charmitro
+            .transfer_keep_alive(dest, 50000000000000000000); // existential deposit - @charmitro
 
         let hash = api
             .tx()
